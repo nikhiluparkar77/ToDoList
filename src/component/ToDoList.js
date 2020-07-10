@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-class MainComponent extends Component {
+class ToDoList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,9 +12,14 @@ class MainComponent extends Component {
     this.DeleteItem = this.DeleteItem.bind(this);
   }
   componentDidMount() {
-    if (this.state.addData.length === 0) {
+    if (localStorage.getItem("AddItem") === null) {
       this.setState({
         addData: [],
+      });
+    } else {
+      let data = localStorage.getItem("AddItem").split(",");
+      this.setState({
+        addData: data,
       });
     }
   }
@@ -27,16 +32,21 @@ class MainComponent extends Component {
     e.preventDefault();
     let AddData = this.state.addData;
     AddData.push(this.state.AddItem);
+    localStorage.setItem("AddItem", this.state.addData);
     this.setState({
       addData: AddData,
     });
   }
   DeleteItem(index) {
-    let AddData = this.state.addData;
-    AddData.splice(index, 1);
+    let data = localStorage.getItem("AddItem").split(",");
+    data.splice(index, 1);
     this.setState({
-      addData: AddData,
+      addData: data,
     });
+    localStorage.setItem("AddItem", this.state.addData);
+    if (data.length === 0) {
+      localStorage.removeItem("AddItem");
+    }
   }
   render() {
     let data;
@@ -67,7 +77,7 @@ class MainComponent extends Component {
     return (
       <div style={{ textAlign: "center" }}>
         <div>
-          <h3>To Do List Without Using LocalStroage</h3>
+          <h3>To Do List Using LocalStroage</h3>
           <form onSubmit={this.onSubmit}>
             <input
               type="text"
@@ -87,4 +97,4 @@ class MainComponent extends Component {
   }
 }
 
-export default MainComponent;
+export default ToDoList;
